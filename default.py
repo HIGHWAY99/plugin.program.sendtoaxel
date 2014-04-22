@@ -205,14 +205,26 @@ def DoPlayer(url,destfile="",destpath="",useResolver=False):
 		try: import urlresolver; link=urlresolver.HostedMediaFile(url).resolve(); #debob(urlresolver.HostedMediaFile(url)); 
 		except: link=url
 	else: link=url
-	deb('downloadable url',link); import proxy; axelhelper=proxy.ProxyHelper(); #axelhelper.playUrl(link);
+	deb('downloadable url',link); import axelproxy as proxy; axelhelper=proxy.ProxyHelper(); #axelhelper.playUrl(link);
 	AxelConnections=addst('axel-connections','Default'); AxelUseName=tfalse(addst('axel-usename','false')); AxelKeepFile=tfalse(addst('axel-keepfile','false')); 
-	if (AxelConnections.lower()=='default') or (len(AxelConnections)==0):
-		if AxelUseName==True: axelhelper.playUrl(link,name=destfile,keep_file=AxelKeepFile); 
-		else: axelhelper.playUrl(link,keep_file=AxelKeepFile); 
+	if len(destpath) > 2:
+		if isPath(destpath)==True: usePath=True
+		else: usePath=False
+	else: usePath=False
+	if usePath==True:
+		if (AxelConnections.lower()=='default') or (len(AxelConnections)==0):
+			if AxelUseName==True: axelhelper.playUrl(link,name=destfile,keep_file=AxelKeepFile,dest_folder_path=destpath); 
+			else: axelhelper.playUrl(link,keep_file=AxelKeepFile,dest_folder_path=destpath); 
+		else:
+			if AxelUseName==True: axelhelper.playUrl(link,name=destfile,connections=AxelConnections,keep_file=AxelKeepFile,dest_folder_path=destpath); 
+			else: axelhelper.playUrl(link,connections=AxelConnections,keep_file=AxelKeepFile,dest_folder_path=destpath); 
 	else:
-		if AxelUseName==True: axelhelper.playUrl(link,name=destfile,connections=AxelConnections,keep_file=AxelKeepFile); 
-		else: axelhelper.playUrl(link,connections=AxelConnections,keep_file=AxelKeepFile); 
+		if (AxelConnections.lower()=='default') or (len(AxelConnections)==0):
+			if AxelUseName==True: axelhelper.playUrl(link,name=destfile,keep_file=AxelKeepFile); 
+			else: axelhelper.playUrl(link,keep_file=AxelKeepFile); 
+		else:
+			if AxelUseName==True: axelhelper.playUrl(link,name=destfile,connections=AxelConnections,keep_file=AxelKeepFile); 
+			else: axelhelper.playUrl(link,connections=AxelConnections,keep_file=AxelKeepFile); 
 	###
 
 def DoDownloader(url,destfile="",destpath="",useResolver=False):
@@ -221,14 +233,14 @@ def DoDownloader(url,destfile="",destpath="",useResolver=False):
 		try: import urlresolver; link=urlresolver.HostedMediaFile(url).resolve(); #debob(urlresolver.HostedMediaFile(url)); 
 		except: link=url
 	else: link=url
-	deb('downloadable url',link); import proxy; axelhelper=proxy.ProxyHelper(); #axelhelper.playUrl(link);
+	deb('downloadable url',link); import axelproxy as proxy; axelhelper=proxy.ProxyHelper(); #axelhelper.playUrl(link);
 	AxelConnections=addst('axel-connections','Default'); AxelUseName=tfalse(addst('axel-usename','false')); AxelKeepFile=tfalse(addst('axel-keepfile','false')); 
 	if (AxelConnections.lower()=='default') or (len(AxelConnections)==0):
-		if AxelUseName==True: download_id=axelhelper.download(link,name=destfile); 
-		else: download_id=axelhelper.download(link); 
+		if AxelUseName==True: download_id=axelhelper.download(link,name=destfile,dest_path=destpath); 
+		else: download_id=axelhelper.download(link,dest_path=destpath); 
 	else: #download(self,url,name='Name here',connections=2)
-		if AxelUseName==True: download_id=axelhelper.download(link,name=destfile,connections=AxelConnections); 
-		else: download_id=axelhelper.download(link,connections=AxelConnections); 
+		if AxelUseName==True: download_id=axelhelper.download(link,name=destfile,connections=AxelConnections,dest_path=destpath); 
+		else: download_id=axelhelper.download(link,connections=AxelConnections,dest_path=destpath); 
 	try: addstv('Axel-DownloadID-Last',str(download_id)); 
 	except: pass
 	###
